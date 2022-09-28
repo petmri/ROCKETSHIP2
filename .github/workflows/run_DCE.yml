@@ -34,5 +34,5 @@ jobs:
       - name: Run commands
         uses: matlab-actions/run-command@v1
         with:
-          command: run_dce_auto('test data/test2')
+          command: run_dce_auto('test data/test2/')
 
