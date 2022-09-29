@@ -30,10 +30,9 @@ jobs:
 
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v1
-      - name: Prep data
-        run: gunzip test\ data/test2/DCE_mc_bfc_norm.nii.gz
+
       - name: Run commands
         uses: matlab-actions/run-command@v1
         with:
-          command: run_dce_auto('test data/test2')
+          command: run_dce_auto('test data/test2/')
 
