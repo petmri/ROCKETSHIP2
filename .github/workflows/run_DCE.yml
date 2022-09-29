@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, ubuntu-22.04]
         release: [R2020a, R2021a, R2022a]
     # The type of runner that the job will run on
     runs-on: ${{ matrix.os }}
@@ -38,11 +38,11 @@ jobs:
         with:
           release: ${{ matrix.release }}
         
-      - name: Get MATLAB toolboxes with mpm
-        run: |
-          wget https://www.mathworks.com/mpm/glnxa64/mpm
-          chmod +x mpm
-          ./mpm install --release=${{ matrix.release }} --products Statistics_and_Machine_Learning_Toolbox Parallel_Computing_Toolbox Curve_Fitting_Toolbox
+      #- name: Get MATLAB toolboxes with mpm
+      #  run: |
+      #    wget https://www.mathworks.com/mpm/glnxa64/mpm
+      #    chmod +x mpm
+      #   ./mpm install --release=${{ matrix.release }} --products Statistics_and_Machine_Learning_Toolbox Parallel_Computing_Toolbox Curve_Fitting_Toolbox
 
       - name: Run commands
         uses: matlab-actions/run-command@v1
