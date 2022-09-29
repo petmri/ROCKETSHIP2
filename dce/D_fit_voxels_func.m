@@ -224,20 +224,20 @@ for model_index=1:numel(dce_model_list)
     %disp(['Fitting data using the ' 'dce' ' model']);
     
     % Open pool if not open or improperly sized
-    if ~USE_GPU
-        r_prefs = parse_preference_file('dce_preferences.txt',0,{'use_matlabpool'},{0});
-        if str2num(r_prefs.use_matlabpool)
-            if matlabpool('size')~= number_cpus
-                % Do not launch pool with diary on, locks the log file
-                diary off;
-                if matlabpool('size')>0
-                    matlabpool close;
+    try
+        if ~USE_GPU
+            r_prefs = parse_preference_file('dce_preferences.txt',0,{'use_matlabpool'},{0});
+            if str2num(r_prefs.use_matlabpool)
+                if matlabpool('size')~= number_cpus
+                    % Do not launch pool with diary on, locks the log file
+                    diary off;
+                    if matlabpool('size')>0
+                        matlabpool close;
+                    end
+                    matlabpool('local', number_cpus);
+                    diary on;
                 end
-                matlabpool('local', number_cpus);
-                diary on;
-            end
-        else
-            try
+            else
                 s = gcp('nocreate');
                 % Do not launch pool with diary on, locks the log file
                 diary off;
@@ -250,14 +250,14 @@ for model_index=1:numel(dce_model_list)
                     end
                 end
                 diary on;
-            catch
-                disp('Parallel computing failed or not available.')
             end
+
+
+            % Turn off warnings
+            pctRunOnAll warning 'off'
         end
-    
-    
-        % Turn off warnings
-        pctRunOnAll warning 'off'
+    catch
+        disp('Parallel pooling failed or unavailable.')
     end
     % Substitute R1 data for concentration data in curve to fit
     % FXR model fits to the R1 data directly, not concentrations
