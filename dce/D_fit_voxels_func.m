@@ -237,18 +237,22 @@ for model_index=1:numel(dce_model_list)
                 diary on;
             end
         else
-            s = gcp('nocreate');
-            % Do not launch pool with diary on, locks the log file
-            diary off;
-            if isempty(s)
-                parpool('local',number_cpus);
-            else
-                if s.NumWorkers~=number_cpus
-                    delete(gcp('nocreate'))
+            try
+                s = gcp('nocreate');
+                % Do not launch pool with diary on, locks the log file
+                diary off;
+                if isempty(s)
                     parpool('local',number_cpus);
+                else
+                    if s.NumWorkers~=number_cpus
+                        delete(gcp('nocreate'))
+                        parpool('local',number_cpus);
+                    end
                 end
+                diary on;
+            catch
+                disp('Parallel computing failed or not available.')
             end
-            diary on;
         end
     
     
