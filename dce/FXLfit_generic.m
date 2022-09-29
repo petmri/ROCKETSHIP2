@@ -715,28 +715,16 @@ elseif strcmp(model, 'patlak')
             diary_restore = 1;
         end
         if verbose; p = ProgressBar(number_voxels,'verbose',verbose); end
-        try
-            parfor i = 1:number_voxels
-                % Do quick linear patlak and use values as initial values
-                [estimate, ~] = model_patlak_linear(Ct_data(:,i),Cp_data,timer_data);
-                prefs_local = prefs;
-                prefs_local.initial_value_ktrans = estimate(1);
-                prefs_local.initial_value_vp = estimate(2);
-                % Do non-linear patlak
-                [GG(i,:), residuals(i,:)] = model_patlak(Ct_data(:,i),Cp_data,timer_data,prefs_local);
-                if verbose; p.progress; end;
-            end
-        catch
-            for i = 1:number_voxels
-                % Do quick linear patlak and use values as initial values
-                [estimate, ~] = model_patlak_linear(Ct_data(:,i),Cp_data,timer_data);
-                prefs_local = prefs;
-                prefs_local.initial_value_ktrans = estimate(1);
-                prefs_local.initial_value_vp = estimate(2);
-                % Do non-linear patlak
-                [GG(i,:), residuals(i,:)] = model_patlak(Ct_data(:,i),Cp_data,timer_data,prefs_local);
-                if verbose; p.progress; end;
-            end
+        
+        parfor i = 1:number_voxels
+            % Do quick linear patlak and use values as initial values
+            [estimate, ~] = model_patlak_linear(Ct_data(:,i),Cp_data,timer_data);
+            prefs_local = prefs;
+            prefs_local.initial_value_ktrans = estimate(1);
+            prefs_local.initial_value_vp = estimate(2);
+            % Do non-linear patlak
+            [GG(i,:), residuals(i,:)] = model_patlak(Ct_data(:,i),Cp_data,timer_data,prefs_local);
+            if verbose; p.progress; end;
         end
     
         if verbose; p.stop; end
