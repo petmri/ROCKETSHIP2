@@ -224,40 +224,44 @@ for model_index=1:numel(dce_model_list)
     %disp(['Fitting data using the ' 'dce' ' model']);
     
     % Open pool if not open or improperly sized
-    if ~USE_GPU && ~isempty(ver('parallel'))
-        r_prefs = parse_preference_file('dce_preferences.txt',0,{'use_matlabpool'},{0});
-        if str2num(r_prefs.use_matlabpool)
-            if matlabpool('size')~= number_cpus
+    try
+        if ~USE_GPU && ~isempty(ver('parallel'))
+            r_prefs = parse_preference_file('dce_preferences.txt',0,{'use_matlabpool'},{0});
+            if str2num(r_prefs.use_matlabpool)
+                if matlabpool('size')~= number_cpus
+                    % Do not launch pool with diary on, locks the log file
+                    diary off;
+                    if matlabpool('size')>0
+                        matlabpool close;
+                    end
+                    matlabpool('local', number_cpus);
+                    diary on;
+                end
+            else
+                s = gcp('nocreate');
                 % Do not launch pool with diary on, locks the log file
                 diary off;
-                if matlabpool('size')>0
-                    matlabpool close;
+                if isempty(s)
+                    parpool('local',number_cpus);
+                else
+                    if s.NumWorkers~=number_cpus
+                        delete(gcp('nocreate'))
+                        parpool('local',number_cpus);
+                    end
                 end
-                matlabpool('local', number_cpus);
                 diary on;
             end
+
+
+            % Turn off warnings
+            pctRunOnAll warning 'off'
         else
-            s = gcp('nocreate');
-            % Do not launch pool with diary on, locks the log file
-            diary off;
-            if isempty(s)
-                parpool('local',number_cpus);
-            else
-                if s.NumWorkers~=number_cpus
-                    delete(gcp('nocreate'))
-                    parpool('local',number_cpus);
-                end
-            end
-            diary on;
+            warning('CPU parallel processing disabled. Make sure the MATLAB Parallel Computing Toolkit is installed.')
         end
-
-
-        % Turn off warnings
-        pctRunOnAll warning 'off'
-    else
-        warning('CPU parallel processing disabled. Make sure the MATLAB Parallel Computing Toolkit is installed.')
+    catch
+        warning('CPU parallel processing disabled. May be a toolkit licensing issue.')
     end
-
+    
     % Substitute R1 data for concentration data in curve to fit
     % FXR model fits to the R1 data directly, not concentrations
     %     if strcmp(cur_dce_model,'fxr')
