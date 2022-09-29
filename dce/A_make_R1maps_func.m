@@ -581,15 +581,14 @@ if strcmp(aif_rr_type,'aif_auto') || strcmp(aif_rr_type,'aif_auto_static')
             permute(nonviable_mask,[2 1 3]),...
             permute(drift_mask,[2 1 3])...
             );
+        
+    % We save the ROI image as a fig, We save in the same directory as the
+    % dynamic file.
+    saveas(nn, fullfile(PathName1, [rootname '_image_ROI.fig']));
     else
         warning('ROI plot not updated with AIF roi due to lack of "prctile" function. You may need the MATLAB Stats toolbox.')
     end
 end
-
-
-% We save the ROI image as a fig, We save in the same directory as the
-% dynamic file.
-saveas(nn, fullfile(PathName1, [rootname '_image_ROI.fig']));
 
 %% 5. Manually select injection point, if required
 if(steady_state_time == -1)
