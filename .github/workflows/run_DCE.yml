@@ -42,7 +42,7 @@ jobs:
         run: |
           wget https://www.mathworks.com/mpm/glnxa64/mpm
           chmod +x mpm
-          mpm install --release=${{ matrix.release }} --products Statistics_and_Machine_Learning_Toolbox Parallel_Computing_Toolbox Curve_Fitting_Toolbox
+          ./mpm install --release=${{ matrix.release }} --products Statistics_and_Machine_Learning_Toolbox Parallel_Computing_Toolbox Curve_Fitting_Toolbox
 
       - name: Run commands
         uses: matlab-actions/run-command@v1
