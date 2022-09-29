@@ -292,7 +292,7 @@ for i = 1:dimt
     DYNAMLV(end+1,:) = currentimg(lvind);
     DYNAMNOISE(end+1)= std(single(currentimg(noiseind)));
     
-    if(i == 1)
+    if(i == 1 && exist('prctile', 'file'))
         % This is used for create a graphic showing the ROIs in relation to the
         % DCE MRI image.
         matchimg = currentimg;
@@ -330,6 +330,8 @@ for i = 1:dimt
             permute(drift_mask,[2 1 3])...
             );
         drawnow
+    else
+        warning('ROIs relative to DCE image not drawn due to lack of function "prctile". Your version of MATLAB may require the Statistics and Machine Learning Toolbox')
     end
     
 end
@@ -565,19 +567,23 @@ if strcmp(aif_rr_type,'aif_auto') || strcmp(aif_rr_type,'aif_auto_static')
         LV = LV_temp;
     end
     
-    % Update the ROI plot with the new AIF roi
-    aif_mask = zeros(size_image_3d);
-    aif_mask(lvind)  = 1;
-    figure(nn);
-    % Permute x and y
-    imshow3D_overlays(permute(matchimg,[2 1 3]),...
-        [prctile(reshape(matchimg,1,[]),5) prctile(reshape(matchimg,1,[]),95)],...
-        permute(region_mask,[2 1 3]),...
-        permute(noise_mask,[2 1 3]),...
-        permute(aif_mask,[2 1 3]),...
-        permute(nonviable_mask,[2 1 3]),...
-        permute(drift_mask,[2 1 3])...
-        );
+    if (exist('prctile', 'file'))
+        % Update the ROI plot with the new AIF roi
+        aif_mask = zeros(size_image_3d);
+        aif_mask(lvind)  = 1;
+        figure(nn);
+        % Permute x and y
+        imshow3D_overlays(permute(matchimg,[2 1 3]),...
+            [prctile(reshape(matchimg,1,[]),5) prctile(reshape(matchimg,1,[]),95)],...
+            permute(region_mask,[2 1 3]),...
+            permute(noise_mask,[2 1 3]),...
+            permute(aif_mask,[2 1 3]),...
+            permute(nonviable_mask,[2 1 3]),...
+            permute(drift_mask,[2 1 3])...
+            );
+    else
+        warning('ROI plot not updated with AIF roi due to lack of "prctile" function. You may need the MATLAB Stats toolbox.')
+    end
 end
 
 
