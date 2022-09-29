@@ -37,6 +37,12 @@ jobs:
         uses: matlab-actions/setup-matlab@v1
         with:
           release: ${{ matrix.release }}
+        
+      - name: Get MATLAB toolboxes with mpm
+        run: |
+          wget https://www.mathworks.com/mpm/glnxa64/mpm
+          chmod +x mpm
+          mpm install --release=${{ matrix.release }} --products Statistics_and_Machine_Learning_Toolbox Parallel_Computing_Toolbox Curve_Fitting_Toolbox
 
       - name: Run commands
         uses: matlab-actions/run-command@v1
