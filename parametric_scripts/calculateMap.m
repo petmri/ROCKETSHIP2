@@ -196,7 +196,7 @@ catch
 end
 
 % Create parallel processing pool
-if ~neuroecon && ~gpufit_available
+if ~neuroecon && ~gpufit_available && ~isempty(ver('parallel'))
     r_prefs = parse_preference_file('parametric_preferences.txt',0,{'use_matlabpool'},{0});
     if str2num(r_prefs.use_matlabpool)
         s = matlabpool('size');

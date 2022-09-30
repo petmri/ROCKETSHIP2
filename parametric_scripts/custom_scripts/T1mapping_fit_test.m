@@ -12,7 +12,7 @@ odd_echoes = 0;		% boolean, if selected only odd parameters will be
 					% used for fit
 rsquared_threshold = 0.6;
 					% all fits with R^2 less than this set to -1
-number_cpus = 4;	% not used if running on neuroecon or GPU
+number_cpus = 2;	% not used if running on neuroecon or GPU
 neuroecon = 0;		% boolean
 output_basename = 'T1_map';
 					% base of output filename
