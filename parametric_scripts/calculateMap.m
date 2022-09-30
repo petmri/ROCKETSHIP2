@@ -196,33 +196,37 @@ catch
 end
 
 % Create parallel processing pool
-if ~neuroecon && ~gpufit_available && ~isempty(ver('parallel'))
-    r_prefs = parse_preference_file('parametric_preferences.txt',0,{'use_matlabpool'},{0});
-    if str2num(r_prefs.use_matlabpool)
-        s = matlabpool('size');
-        if s~=number_cpus
-            if s>0
-                matlabpool close
+try
+    if ~neuroecon && ~gpufit_available && ~isempty(ver('parallel'))
+        r_prefs = parse_preference_file('parametric_preferences.txt',0,{'use_matlabpool'},{0});
+        if str2num(r_prefs.use_matlabpool)
+            s = matlabpool('size');
+            if s~=number_cpus
+                if s>0
+                    matlabpool close
+                end
+                matlabpool('local', number_cpus); % Check
             end
-            matlabpool('local', number_cpus); % Check
-        end
-        if strcmp(fit_type, 'user_input') && submit
-            matlabpool('ADDATTACHEDFILES', {fit_file});
-        end  
-    else
-        s = gcp('nocreate');
-        if isempty(s)
-            parpool('local',number_cpus);
+            if strcmp(fit_type, 'user_input') && submit
+                matlabpool('ADDATTACHEDFILES', {fit_file});
+            end  
         else
-            if s.NumWorkers~=number_cpus
-                delete(gcp('nocreate'))
+            s = gcp('nocreate');
+            if isempty(s)
                 parpool('local',number_cpus);
+            else
+                if s.NumWorkers~=number_cpus
+                    delete(gcp('nocreate'))
+                    parpool('local',number_cpus);
+                end
             end
+            if strcmp(fit_type, 'user_input') && submit
+               parpool('ADDATTACHEDFILES', {fit_file});
+            end    
         end
-        if strcmp(fit_type, 'user_input') && submit
-           parpool('ADDATTACHEDFILES', {fit_file});
-        end    
     end
+catch
+    warning('Parallel pooling failed. This may be due to a licensing issue or lack of installation.')
 end
 
 execution_time = zeros(size(file_list,1),1);
