@@ -3,7 +3,7 @@ function T1mapping_fit(path)
 %------------------------------------
 file_list = {strcat(path,'VFA_mc.nii')};
 					% must point to valid nifti files
-parameter_list = [2 5 10 12 15]';
+parameter_list = [2 5 10]';
 					% units of ms or degrees
 fit_type = 't1_fa_fit';
 					% options{'none','t2_linear_simple','t2_linear_weighted','t2_exponential','t2_linear_fast'
