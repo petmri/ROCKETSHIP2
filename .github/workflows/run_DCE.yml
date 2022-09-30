@@ -14,7 +14,7 @@ on:
 jobs:
   build:
     strategy:
-      fail-fast: false
+      #fail-fast: false
       matrix:
         os: [ubuntu-latest, ubuntu-22.04]
         release: [R2020a, R2021a, R2022a]
@@ -28,13 +28,17 @@ jobs:
         with:
           release: ${{ matrix.release }}
         
-      - name: Get MATLAB toolboxes with mpm
-        run: |
-          wget https://www.mathworks.com/mpm/glnxa64/mpm
-          chmod +x mpm
-          ./mpm install --release=${{ matrix.release }} --products MATLAB Statistics_and_Machine_Learning_Toolbox Parallel_Computing_Toolbox Curve_Fitting_Toolbox
+      #- name: Get MATLAB toolboxes with mpm
+      #  run: |
+      #    wget https://www.mathworks.com/mpm/glnxa64/mpm
+      #    chmod +x mpm
+      #    ./mpm install --release=${{ matrix.release }} --products MATLAB Statistics_and_Machine_Learning_Toolbox Parallel_Computing_Toolbox Curve_Fitting_Toolbox
+      - name: Run T1 mapping
+        uses: matlab-actions/run-command@v1
+        with:
+          command: cd('parametric_scripts/custom_scripts/'); T1mapping_fit('test data/test2/')
 
-      - name: Run commands
+      - name: Run DCE
         uses: matlab-actions/run-command@v1
         with:
           command: run_dce_auto('test data/test2/')
