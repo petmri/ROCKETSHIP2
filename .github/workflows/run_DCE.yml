@@ -36,7 +36,7 @@ jobs:
       - name: Run T1 mapping
         uses: matlab-actions/run-command@v1
         with:
-          command: cd('parametric_scripts/custom_scripts/'); T1mapping_fit('test data/test2/')
+          command: addpath dce/; addpath external_programs/; addpath external_programs/niftitools/; addpath parametric_scripts/; cd('parametric_scripts/custom_scripts/'); T1mapping_fit('test data/test2/')
 
       - name: Run DCE
         uses: matlab-actions/run-command@v1
