@@ -5,7 +5,7 @@ file_list = {strcat(path,'VFA_mc.nii')};
 					% must point to valid nifti files
 parameter_list = [2 5 10]';
 					% units of ms or degrees
-fit_type = 't1_fa_fit';
+fit_type = 't1_fa_linear_fit';
 					% options{'none','t2_linear_simple','t2_linear_weighted','t2_exponential','t2_linear_fast'
 					%			't1_tr_fit','t1_fa_fit','t1_fa_linear_fit','t1_ti_exponential_fit'}
 odd_echoes = 0;		% boolean, if selected only odd parameters will be
