@@ -104,17 +104,7 @@ end
 %% DO NOT ALTER LINES BELOW UNLESS YOU KNOW WHAT YOU ARE DOING
 % Log input results
 %[log_path,base,~] = fileparts(dce_path);
-[TUMOR, LV, NOISE, DYNAMIC, DRIFT, dynampath, dynam_name, rootname, hdr, ...
-    res, sliceloc, errormsg] = ...
-    loadIMGVOL(filevolume, noise_pathpick, noise_pixsize, LUT, t1aiffiles, ...
-    t1roifiles, t1mapfiles, noisefiles, driftfiles, filelist, rootname, ...
-    fileorder, mask_roi, mask_aif);
-log_path = dynampath;
-log_path = fullfile(log_path, ['A_' rootname 'R1info.log']);
-if exist(log_path, 'file')==2
-  delete(log_path);
-end
-diary(log_path);
+
 fprintf('************** User Input **************\n\n');
 % disp('User selected dce file: ');
 % fprintf('%s\n\n',dce_path);
@@ -136,6 +126,27 @@ disp('User selected contrast agent R1 relaxivity (/mM/sec): ');
 disp(relaxivity);
 disp('User selected end of steady state time (image number): ');
 disp(steady_state_time);
+
+if quant
+    disp('User selected quantification: ie. T1 maps');
+else
+    disp('User selected no quantification: raw signal data only');
+end
+
+
+%% 2. a) Load the files
+[TUMOR, LV, NOISE, DYNAMIC, DRIFT, dynampath, dynam_name, rootname, hdr, ...
+    res, sliceloc, errormsg] = ...
+    loadIMGVOL(filevolume, noise_pathpick, noise_pixsize, LUT, t1aiffiles, ...
+    t1roifiles, t1mapfiles, noisefiles, driftfiles, filelist, rootname, ...
+    fileorder, mask_roi, mask_aif);
+log_path = dynampath;
+log_path = fullfile(log_path, ['A_' rootname 'R1info.log']);
+if exist(log_path, 'file')==2
+  delete(log_path);
+end
+diary(log_path);
+
 disp('User selected drift correction: ');
 if(isempty(find(DRIFT > 0, 1)))
     disp('None')
@@ -146,24 +157,16 @@ else
         disp('Slicewise');
     end
 end
-
-if quant
-    disp('User selected quantification: ie. T1 maps');
-else
-    disp('User selected no quantification: raw signal data only');
-end
 fprintf('************** End User Input **************\n\n\n');
-
 disp('Starting Part A Processing')
 disp(datestr(now))
 disp(' ');
 tic
 
-%% 2. a) Load the files
 % Ask for file location
 place = '';
-
 [PathName1,~,~] = fileparts(log_path);
+
 % [PathName1,base,ext] = fileparts(dce_path);
 % dynam = [base ext];
 % 
