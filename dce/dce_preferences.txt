@@ -1,7 +1,7 @@
 % GPU options
 %%%%%%%%%%%%%%%%%%%%%%
 % Requires NVIDIA GPU, and GPUFit library
-gpu_use = 1
+gpu_use = 0
 gpu_tolerance = 1e-12
 gpu_max_n_iterations = 200
 gpu_initial_value_ktrans = 0.0002
