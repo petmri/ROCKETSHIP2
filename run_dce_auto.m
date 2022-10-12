@@ -32,13 +32,13 @@ if ~strcmp(script_prefs.noise_files,'')
     noise_files = cellstr(strcat(subject_tp_path,script_prefs.noise_files));
 else
     noise_files = '';
-end;
+end
 
 if ~strcmp(script_prefs.drift_files,'')
     drift_files = cellstr(strcat(subject_tp_path,script_prefs.drift_files));
 else
     drift_files = '';
-end;
+end
     
 quant = str2num(script_prefs.quant);
 roimaskroi = str2num(script_prefs.roimaskroi);
@@ -63,7 +63,6 @@ injection_duration = str2num(script_prefs.injection_duration);
     relaxivity, injection_time, drift_global, blood_t1, injection_duration);
 
 if ~isempty(errormsg)
-    
     disp_error(errormsg, handles);
     return;
 end
@@ -136,6 +135,16 @@ neuroecon = 0;
 
 % main function call
 D_results = D_fit_voxels_func(B_results,dce_model,script_prefs.time_smoothing,time_smoothing_window,xy_smooth_size,number_cpus,roi_list,fit_voxels,neuroecon, outputft);
+
+% fig to png
+cd(subject_tp_path);
+fig = openfig(strcat(subject_tp_path,'dceAIF_fitting.fig'));
+filename = 'dceAIF_fitting.png';
+saveas(fig, filename);
+
+fig = openfig(strcat(subject_tp_path,'dce_timecurves.fig'));
+filename = 'dce_timecurves.png';
+saveas(fig, filename);
 
 %% clean up
 close all
