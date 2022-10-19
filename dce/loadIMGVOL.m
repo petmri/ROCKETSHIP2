@@ -2,12 +2,9 @@ function [TUMOR, LV, NOISE, DYNAMIC, DRIFT, dynampath, dynamname, rootname, ...
     hdr, res, sliceloc, errormsg] = ...
     loadIMGVOL(filevolume, noise_pathpick, noise_pixsize, LUT, t1aiffiles, ...
     t1roifiles, t1mapfiles, noisefiles, driftfiles, filelist, rootname, ...
-    fileorder, mask_roi, mask_aif)
-
+    fileorder, mask_roi, mask_aif, start_t, end_t)
 
 % Takes handles, loads the image files and outputs image volume.
-
-
 
 % Initialize Image sets
 TUMOR = [];
@@ -22,8 +19,6 @@ errormsg = '';
 hdr = [];
 res = [];
 %% Load image files
-
-
 
 % Load ROI file - either 3D volume or 2D slice
 % hdr , res are derived from here
@@ -272,7 +267,15 @@ if filevolume == 1
         img = nii.img;
         hdr = nii.hdr;
         res = nii.hdr.dime.pixdim(2:4);
-        DYNAMIC = img;
+        if (start_t > 0) & (end_t > start_t)
+            DYNAMIC = img(:,:,:,start_t:end_t);
+        elseif (start_t > 1) & isempty(end_t)
+            DYNAMIC = img(:,:,:,start_t:size(img,4));
+        elseif (end_t > 0)
+            DYNAMIC = img(:,:,:,1:end_t);
+        else
+            DYNAMIC = img;
+        end
     else
         errormsg = 'Unknown file type - DYNAMIC';
         return;
@@ -403,18 +406,3 @@ end
 if rem(size(DYNAMIC,3),size(TUMOR,3)) ~= 0
     errormsg = 'timepoints not divisible by slices';
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

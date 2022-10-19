@@ -23,7 +23,7 @@
     dynamic_files = DCE_mc_bfc_norm.nii
 
     aif_files = aif.nii
-    roi_files = brain_mask.nii.gz
+    roi_files = t1w_bet_mask_dyn.nii.gz
     t1map_files = t1_map_fixed_use_me.nii.gz
     noise_files =
     drift_files =
@@ -56,6 +56,12 @@ tr = 21.572
 
 % flip angle of dynamic scan (degrees)
 fa = 20
+
+% what t-dimension image to start from/end on
+% useful for excluding bad data points at beginning or end
+% leave blank to do from beginning/to end
+start_t = 3
+end_t = 
 
 % hematocrit percent (0 - 1.00) of subject
 hematocrit = 0.45
@@ -101,7 +107,7 @@ auto_find_injection = 1
     end_injection = 0.7
 
 % time resolution of dynamic scan (in seconds)
-time_resolution = 2.6
+time_resolution = 15.4
 
 % raw = 2, fitted = 1, import = 3, raw for reference region
 aif_type = 1
